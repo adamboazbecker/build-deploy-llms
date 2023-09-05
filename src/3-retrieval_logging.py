@@ -97,6 +97,7 @@ def log_index(vector_store_dir: str, run: "wandb.run"):
       run (wandb.run): The wandb run to log the artifact to.
   """
   index_artifact = wandb.Artifact(name="vector_store", type="search_index")
+  index_artifact.add_dir(vector_store_dir)
   run.log_artifact(index_artifact)
 
 
