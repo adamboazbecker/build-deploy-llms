@@ -5,6 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
+########################################################################
+# GOAL: DEVELOP INTUITION ABOUT THE CONCEPT OF `TEMPERATURE` AND `TOPP`
+########################################################################
+
 PROMPT = "Say something about New York City"
 MODEL = "text-davinci-003"
 
