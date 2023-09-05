@@ -8,4 +8,6 @@ gradio_client>=0.2.5
 tenacity>=8.2.2
 tiktoken>=0.4.0
 rich>=13.0.1
-chromadb>=0.3.25
+chromadb=0.3.29
+markdown=3.4.4
+pysqlite3=0.5.1
