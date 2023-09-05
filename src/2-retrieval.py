@@ -8,6 +8,7 @@ from getpass import getpass
 import langchain
 from langchain.docstore.document import Document
 from langchain import document_loaders
+from langchain.embeddings import OpenAIEmbeddings
 
 from dotenv import load_dotenv
 
@@ -47,9 +48,17 @@ def load_documents(data_dir: str) -> List[Document]:
   """
   md_files = list(map(str, pathlib.Path(data_dir).glob("*.md")))
   documents = [
-    document_loaders.DirectoryLoader(md_files).load()
+    # Clue! Load using the UnstructuredMarkdownLoader imported above
+    # [Enter the loading function]
     for file_path in md_files
   ]
+
+  """
+  Each call to `load` return the following response:
+  [
+    Document(page_content='the text in the document', metadata={'source': 'the/file/path.md'})
+  ]
+  """
   return documents
 
 
@@ -70,7 +79,11 @@ def create_vector_store(
   Returns:
       Chroma: A ChromaDB vector store containing the documents.
   """
-  vector_store = langchain.vectorstores.Chroma(
+
+  #
+  # Clue! You should be using the OpenAI Embeddings that we imported above
+  #
+  vector_store = langchain.vectorstores.Chroma.from_documents(
     documents=documents,
     persist_directory=vector_store_path,
   )
