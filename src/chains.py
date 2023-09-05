@@ -90,18 +90,21 @@ def retrieve_with_chain(question, vector_store):
   print(result)
 
 
-if __name__ == "__main__":
+def main():
   question = ""
 
   read_openai_api_key()
   vector_store_path = download_from_wandb_artifact()
   vector_store = load_vector_store(vector_store_path=vector_store_path)
-  documents = get_relevant_documents(question, vector_store)
   # Approach 1: "Stuff" the prompt yourself
+  # documents = get_relevant_documents(question, vector_store)
   # stuffed_prompt = get_stuffed_prompt(documents, question)
   # call_openai_chat(stuffed_prompt)
 
   # Approach 2: Use a chain instead
-  set_up_logging()
+  # set_up_logging()
   retrieve_with_chain(question, vector_store)
 
+
+if __name__ == "__main__":
+  main()

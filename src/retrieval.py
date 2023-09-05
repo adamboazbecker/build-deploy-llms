@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
+QUERY = "Hi there!"
+
 
 def read_openai_api_key():
   api_key = os.environ.get("OPENAI_API_KEY", None)
@@ -87,12 +89,12 @@ def get_relevant_documents(query, vector_store):
     print(doc.metadata["source"])
 
 
-if __name__ == "__main__":
-  query = "Hi there!"
-
+def main():
   read_openai_api_key()
-  # play_with_embeddings()
+  play_with_embeddings()
   documents = load_documents("./docs_sample")
   vector_store = create_vector_store(documents, vector_store_path="./vector_store")
-  get_relevant_documents(query, vector_store)
+  get_relevant_documents(QUERY, vector_store)
 
+if __name__ == "__main__":
+  main()
