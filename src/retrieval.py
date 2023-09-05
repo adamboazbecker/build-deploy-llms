@@ -26,16 +26,15 @@ def read_openai_api_key():
 
 
 
-def play_with_embeddings():
-  encoding = tiktoken.encoding_for_model("text-davinci-003")
-  enc = encoding.encode("NYC is the place to be")
-  print(enc)
-  print(encoding.decode(enc))
-
-  # we can decode the tokens one by one
-  for token_id in enc:
-    print(f"{token_id}\t{encoding.decode([token_id])}")
-
+# def play_with_embeddings():
+#   enc = tiktoken.encoding_for_model("NYC is the place to be")
+#   print(enc)
+#   print(tiktoken.encoding.decode(enc))
+#
+#   # we can decode the tokens one by one
+#   for token_id in enc:
+#     print(f"{token_id}\t{tiktoken.encoding.decode([token_id])}")
+#
 
 def load_documents(data_dir: str) -> List[Document]:
   """Load documents from a directory of markdown files
@@ -48,7 +47,7 @@ def load_documents(data_dir: str) -> List[Document]:
   """
   md_files = list(map(str, pathlib.Path(data_dir).glob("*.md")))
   documents = [
-    document_loaders.UnstructuredMarkdownLoader(file_path=file_path).load()[0]
+    document_loaders.DirectoryLoader(md_files).load()
     for file_path in md_files
   ]
   return documents
@@ -71,10 +70,8 @@ def create_vector_store(
   Returns:
       Chroma: A ChromaDB vector store containing the documents.
   """
-  embedding_function = langchain.embeddings.OpenAIEmbeddings(openai_api_key=openai.api_key)
-  vector_store = langchain.vectorstores.Chroma.from_documents(
+  vector_store = langchain.vectorstores.Chroma(
     documents=documents,
-    embedding=embedding_function,
     persist_directory=vector_store_path,
   )
   vector_store.persist()
@@ -82,8 +79,7 @@ def create_vector_store(
 
 
 def get_relevant_documents(query, vector_store):
-  retriever = vector_store.as_retriever(search_kwargs=dict(k=3))
-  docs = retriever.get_relevant_documents(query)
+  docs = vector_store.get_relevant_documents(query)
   # Let's see the results
   for doc in docs:
     print(doc.metadata["source"])
@@ -91,7 +87,7 @@ def get_relevant_documents(query, vector_store):
 
 def main():
   read_openai_api_key()
-  play_with_embeddings()
+  # play_with_embeddings()
   documents = load_documents("./docs_sample")
   vector_store = create_vector_store(documents, vector_store_path="./vector_store")
   get_relevant_documents(QUERY, vector_store)

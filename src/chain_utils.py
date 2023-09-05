@@ -47,7 +47,6 @@ def load_chain(wandb_run: wandb.run, vector_store: Chroma, openai_api_key: str):
     Returns:
         ConversationalRetrievalChain: A ConversationalRetrievalChain object
     """
-    retriever = vector_store.as_retriever()
     llm = ChatOpenAI(
         openai_api_key=openai_api_key,
         model_name=wandb_run.config['model_name'],
@@ -55,10 +54,10 @@ def load_chain(wandb_run: wandb.run, vector_store: Chroma, openai_api_key: str):
         max_retries=wandb_run.config['max_fallback_retries'],
     )
     qa_prompt = load_chat_prompt()
-    qa_chain = ConversationalRetrievalChain.from_llm(
+    qa_chain = ConversationalRetrievalChain(
         llm=llm,
         chain_type="stuff",
-        retriever=retriever,
+        retriever=vector_store,
         combine_docs_chain_kwargs={"prompt": qa_prompt},
         return_source_documents=True,
     )
