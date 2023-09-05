@@ -3,6 +3,7 @@ import openai
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from getpass import getpass
+from config import config
 
 import langchain
 from dotenv import load_dotenv
@@ -20,8 +21,10 @@ def read_openai_api_key():
 
 
 def download_from_wandb_artifact():
-  # Implement wandb init here
-  return "./vector_store"
+  run = wandb.init()
+  artifact = run.use_artifact(config["vector_store_artifact"], type="search_index")
+  artifact_dir = artifact.download()
+  return artifact_dir
 
 
 def load_vector_store(vector_store_path) -> langchain.vectorstores.Chroma:
@@ -78,10 +81,12 @@ def set_up_logging():
 
 
 def retrieve_with_chain(question, vector_store):
+  # Clue! We have a vector store, yet the chain requires a "retriever".
+  # How do we convert a vector store into a "retriever"?
   qa = langchain.chains.RetrievalQA.from_chain_type(
     llm=OpenAI(),
     chain_type="stuff",
-    retriever=vector_store
+    retriever=...
   )
   result = qa.run(question)
   print(result)
