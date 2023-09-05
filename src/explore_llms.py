@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
+PROMPT = "Say something about New York City"
+MODEL = "text-davinci-003"
+
 
 def read_openai_api_key():
   api_key = os.environ.get("OPENAI_API_KEY", None)
@@ -16,8 +19,8 @@ def read_openai_api_key():
 
 def play_with_temperature():
   response = openai.Completion.create(
-    model="text-davinci-003",
-    prompt="Say something about New York City",
+    model=MODEL,
+    prompt=PROMPT,
     max_tokens=100,
     temperature=0.02,
   )
@@ -25,17 +28,17 @@ def play_with_temperature():
 
 def play_with_topp():
   response = openai.Completion.create(
-    model="text-davinci-003",
-    prompt="Say something about New York City",
+    model=MODEL,
+    prompt=PROMPT,
     max_tokens=100,
     top_p=1
   )
 
 
 def play_with_chat():
-  MODEL = "gpt-3.5-turbo"
+  # The model name specified at the top doesn't work with the ChatCompletion API
   response = openai.ChatCompletion.create(
-    model=MODEL,
+    model="gpt-3.5-turbo",
     messages=[
       {"role": "system", "content": "You are a helpful assistant."},
       {"role": "user", "content": "Say something about New York City"},
@@ -44,8 +47,11 @@ def play_with_chat():
   )
 
 
-if __name__ == "__main__":
+def main():
   read_openai_api_key()
   play_with_temperature()
   play_with_topp()
   play_with_chat()
+
+if __name__ == "__main__":
+  main()
