@@ -65,6 +65,25 @@ def load_chain(wandb_run: wandb.run, vector_store: Chroma, openai_api_key: str):
 
 
 def load_chat_prompt() -> ChatPromptTemplate:
+    """
+     Loads a chat prompt template for Wandbot, an AI assistant for answering Weights & Biases (WandB) related questions.
+
+     This function defines a chat prompt template consisting of a system template that instructs
+     the AI assistant (Wandbot) on how to respond to user queries related to Weights & Biases (WandB).
+     The template includes guidelines on providing accurate and helpful responses based on context
+     and not relying on prior knowledge.
+
+     Args:
+         None
+
+     Returns:
+         ChatPromptTemplate: A template for conducting a conversation with Wandbot.
+
+     Note:
+         - The template defines Wandbot's behavior, including handling unrelated questions and
+           asking for clarification when necessary.
+         - Wandbot's responses are generated based on the context provided in the conversation.
+     """
     template = {
         "system_template": "You are wandbot, an AI assistant designed to provide accurate and helpful responses to"
            "questions related to Weights & Biases and its python SDK, wandb.\\n"

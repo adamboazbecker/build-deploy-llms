@@ -12,6 +12,24 @@ load_dotenv()  # take environment variables from .env.
 
 
 def read_openai_api_key():
+  """
+  Reads the OpenAI API key from environment variables or user input.
+
+  This function first attempts to retrieve the OpenAI API key from the environment variable
+  "OPENAI_API_KEY." If the environment variable is not set, it prompts the user to input
+  their API key interactively. The API key is then validated to ensure it starts with "sk-"
+  to confirm its validity, and it is set as the authentication key for OpenAI API calls.
+
+  Args:
+      None
+
+  Raises:
+      AssertionError: If the provided API key does not start with "sk-", indicating an
+                       invalid OpenAI API key.
+
+  Returns:
+      None
+  """
   api_key = os.environ.get("OPENAI_API_KEY", None)
   if api_key is None:
     api_key = getpass("Paste your OpenAI key from: https://platform.openai.com/account/api-keys\n")

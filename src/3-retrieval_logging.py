@@ -16,25 +16,34 @@ from dotenv import load_dotenv
 load_dotenv()  # take environment variables from .env.
 
 
+QUERY = "How should I think about artifacts?"
+
+
 def read_openai_api_key():
+  """
+  Reads the OpenAI API key from environment variables or user input.
+
+  This function first attempts to retrieve the OpenAI API key from the environment variable
+  "OPENAI_API_KEY." If the environment variable is not set, it prompts the user to input
+  their API key interactively. The API key is then validated to ensure it starts with "sk-"
+  to confirm its validity, and it is set as the authentication key for OpenAI API calls.
+
+  Args:
+      None
+
+  Raises:
+      AssertionError: If the provided API key does not start with "sk-", indicating an
+                       invalid OpenAI API key.
+
+  Returns:
+      None
+  """
   api_key = os.environ.get("OPENAI_API_KEY", None)
   if api_key is None:
     api_key = getpass("Paste your OpenAI key from: https://platform.openai.com/account/api-keys\n")
 
   assert api_key.startswith("sk-"), "This doesn't look like a valid OpenAI API key"
   openai.api_key = api_key
-
-
-
-def play_with_embeddings():
-  encoding = tiktoken.encoding_for_model("text-davinci-003")
-  enc = encoding.encode("NYC is the place to be")
-  print(enc)
-  print(encoding.decode(enc))
-
-  # we can decode the tokens one by one
-  for token_id in enc:
-    print(f"{token_id}\t{encoding.decode([token_id])}")
 
 
 def load_documents(data_dir: str) -> List[Document]:
@@ -52,10 +61,6 @@ def load_documents(data_dir: str) -> List[Document]:
     for file_path in md_files
   ]
   return documents
-
-
-def chunk_documents():
-  pass
 
 
 def create_vector_store(
@@ -82,6 +87,19 @@ def create_vector_store(
 
 
 def get_relevant_documents(query, vector_store):
+  """
+  Retrieves relevant documents from a vector store based on a given query.
+
+  Args:
+      query (str): The query string to search for relevant documents.
+      vector_store (VectorStore): An instance of the VectorStore class containing document vectors.
+
+  Returns:
+      list: A list of relevant documents retrieved from the vector store.
+
+  Prints:
+      Prints the source metadata of each relevant document to the console.
+  """
   retriever = vector_store.as_retriever(search_kwargs=dict(k=3))
   docs = retriever.get_relevant_documents(query)
   # Let's see the results
@@ -102,17 +120,26 @@ def log_index(vector_store_dir: str, run: "wandb.run"):
 
 
 def main():
-  query = "Hi there!"
-
+  # Step 1:
   run = wandb.init(project=config['project'], config=config)
 
+  # Step 2:
   read_openai_api_key()
-  # play_with_embeddings()
-  documents = load_documents("./docs_sample")
-  vector_store = create_vector_store(documents, vector_store_path="./vector_store")
-  get_relevant_documents(query, vector_store)
 
+  # Step 3:
+  documents = load_documents("./docs_sample")
+
+  # Step 4:
+  vector_store = create_vector_store(documents, vector_store_path="./vector_store")
+
+  # Step 5:
+  get_relevant_documents(QUERY, vector_store)
+
+  # Step 6:
   log_index("./docs_sample", run)
+
+  # Step 7:
+  run.finish()
 
 
 if __name__ == "__main__":
